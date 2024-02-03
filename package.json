@@ -1,0 +1,13 @@
+{
+  "name": "tele-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "cryptr": "^6.3.0",
+    "express": "^4.18.2",
+    "fs-extra": "^11.2.0",
+    "telegram": "^2.19.10",
+    "yargs": "^17.7.2"
+  }
+}
