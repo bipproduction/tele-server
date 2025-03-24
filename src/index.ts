@@ -9,9 +9,12 @@ import {
   sendMessage,
   sendImage,
 } from "./telegram";
+import minimist from "minimist";
+
+const argv = minimist(process.argv.slice(2));
 
 // Environment Variables
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = argv.port || Number(process.env.PORT) || 3000;
 const API_KEY = process.env.TELE_API_KEY;
 
 if (!API_KEY) {

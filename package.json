@@ -3,12 +3,16 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "build": "true",
+    "start": "bun --bun run src/index.ts"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.2.0",
     "@elysiajs/swagger": "^1.2.2",
+    "@types/minimist": "^1.2.5",
     "elysia": "latest",
+    "minimist": "^1.2.8",
     "nanoid": "^5.1.5",
     "telegram": "^2.26.22"
   },
