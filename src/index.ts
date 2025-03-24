@@ -28,7 +28,7 @@ type ApiResponse<T> = { success: true; data: T } | { success: false; error: stri
 
 // Inisialisasi Elysia App
 function setupElysia(client: TelegramClient) {
-  const app = new Elysia({ prefix: "/api" })
+  const api = new Elysia({ prefix: "/api" })
     .use(swagger())
     .use(cors({ origin: "*" }))
     .onBeforeHandle(({ request, response }) => {
@@ -44,10 +44,10 @@ function setupElysia(client: TelegramClient) {
     });
 
   // Root Endpoint
-  app.get("/", () => "Welcome to Telegram Bot API");
+  api.get("/", () => "Welcome to Telegram Bot API");
 
   // Start Telegram Bot
-  app.get("/start", async (): Promise<ApiResponse<string>> => {
+  api.get("/start", async (): Promise<ApiResponse<string>> => {
     try {
       if (await client.checkAuthorization()) {
         return { success: true, data: "Telegram bot already running" };
@@ -61,7 +61,7 @@ function setupElysia(client: TelegramClient) {
   });
 
   // Reload Telegram Client
-  app.get("/reload", async (): Promise<ApiResponse<string>> => {
+  api.get("/reload", async (): Promise<ApiResponse<string>> => {
     try {
       await reloadTelegramClient(client);
       return { success: true, data: "Telegram client reloaded successfully" };
@@ -72,7 +72,7 @@ function setupElysia(client: TelegramClient) {
   });
 
   // Get Groups Endpoint
-  app.get("/groups", async (): Promise<ApiResponse<{ title: string; id: string }[]>> => {
+  api.get("/groups", async (): Promise<ApiResponse<{ title: string; id: string }[]>> => {
     try {
       const groups = await findGroupId(client);
       return { success: true, data: groups };
@@ -83,7 +83,7 @@ function setupElysia(client: TelegramClient) {
   });
 
   // Send Message via GET
-  app.get("/send/:id/:message", async ({ params }): Promise<ApiResponse<string>> => {
+  api.get("/send/:id/:message", async ({ params }): Promise<ApiResponse<string>> => {
     try {
       await sendMessage(client, params.id, params.message);
       return { success: true, data: "Message sent" };
@@ -94,7 +94,7 @@ function setupElysia(client: TelegramClient) {
   });
 
   // Send Message via POST
-  app.post("/send-text", async ({ body }): Promise<ApiResponse<string>> => {
+  api.post("/send-text", async ({ body }): Promise<ApiResponse<string>> => {
     if (!body.id || !body.message) {
       return { success: false, error: "Invalid request: id and message are required" };
     }
@@ -114,7 +114,7 @@ function setupElysia(client: TelegramClient) {
 
 
   // Send Image via POST
-  app.post("/send-image", async ({ body }): Promise<ApiResponse<string>> => {
+  api.post("/send-image", async ({ body }): Promise<ApiResponse<string>> => {
     if (!body.id || !body.image) {
       return { success: false, error: "Invalid request: id and image are required" };
     }
@@ -139,7 +139,7 @@ function setupElysia(client: TelegramClient) {
   });
 
   // Send File via POST
-  app.post("/send-file", async ({ body }): Promise<ApiResponse<string>> => {
+  api.post("/send-file", async ({ body }): Promise<ApiResponse<string>> => {
     if (!body.id || !body.file) {
       return { success: false, error: "Invalid request: id and file are required" };
     }
@@ -162,6 +162,10 @@ function setupElysia(client: TelegramClient) {
       caption: t.Optional(t.String({ description: "Caption for the file", maxLength: 1024 })),
     }),
   });
+
+  const app = new Elysia()
+    .get("/", () => "Welcome to Telegram Bot API")
+    .use(api)
 
   return app;
 }
