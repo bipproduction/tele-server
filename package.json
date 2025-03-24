@@ -6,7 +6,11 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
-    "elysia": "latest"
+    "@elysiajs/cors": "^1.2.0",
+    "@elysiajs/swagger": "^1.2.2",
+    "elysia": "latest",
+    "nanoid": "^5.1.5",
+    "telegram": "^2.26.22"
   },
   "devDependencies": {
     "bun-types": "latest"
