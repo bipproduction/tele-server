@@ -65,7 +65,8 @@ export async function sendMessage(
 ): Promise<void> {
 //   if (!/^-?\d+$/.test(id)) throw new Error("Invalid group ID");
   if (message.length > 4096) throw new Error("Message exceeds 4096 characters");
-  await client.sendMessage(id, { message });
+  const msg = decodeURIComponent(message);
+  await client.sendMessage(id, { message: msg });
 }
 
 // Mengirim Gambar
