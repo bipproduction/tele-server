@@ -16,5 +16,3 @@ function sendImage() {
     -F "caption=Test image" \
     -H "x-api-key: makuro"
 }
-
-sendImage
