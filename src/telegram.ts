@@ -63,7 +63,7 @@ export async function sendMessage(
   id: string,
   message: string
 ): Promise<void> {
-  if (!/^-?\d+$/.test(id)) throw new Error("Invalid group ID");
+//   if (!/^-?\d+$/.test(id)) throw new Error("Invalid group ID");
   if (message.length > 4096) throw new Error("Message exceeds 4096 characters");
   await client.sendMessage(id, { message });
 }
@@ -75,7 +75,7 @@ export async function sendImage(
   imageBuffer: Buffer,
   caption?: string
 ): Promise<void> {
-  if (!/^-?\d+$/.test(id)) throw new Error("Invalid group ID");
+//   if (!/^-?\d+$/.test(id)) throw new Error("Invalid group ID");
   const imageName = nanoid() + ".jpg";
   await fs.writeFile(imageName, imageBuffer);
   await client.sendFile(id, {
@@ -85,3 +85,21 @@ export async function sendImage(
   });
   await fs.unlink(imageName);
 }
+
+// Mengirim file pdf, csv , txt dll
+export async function sendFile(
+  client: TelegramClient,
+  id: string,
+  fileBuffer: Buffer,
+  caption?: string
+): Promise<void> {
+  const fileName = nanoid() + ".pdf";
+  await fs.writeFile(fileName, fileBuffer);
+  await client.sendFile(id, {
+    file: fileName,
+    caption: caption || "File from bot",
+    forceDocument: true
+  });
+  await fs.unlink(fileName);
+}
+
