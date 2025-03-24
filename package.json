@@ -5,7 +5,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch src/index.ts",
     "build": "true",
-    "start": "bun --bun run src/index.ts"
+    "start": "bun src/index.ts"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.2.0",
