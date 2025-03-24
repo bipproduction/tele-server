@@ -93,7 +93,7 @@ export async function sendFile(
   fileBuffer: Buffer,
   caption?: string
 ): Promise<void> {
-  const fileName = nanoid() + ".pdf";
+  const fileName = nanoid() + "." + fileBuffer.toString("utf-8").split(".").pop() || "file";
   await fs.writeFile(fileName, fileBuffer);
   await client.sendFile(id, {
     file: fileName,

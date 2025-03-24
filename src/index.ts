@@ -8,6 +8,7 @@ import {
   findGroupId,
   sendMessage,
   sendImage,
+  sendFile,
 } from "./telegram";
 import minimist from "minimist";
 
@@ -106,7 +107,7 @@ function setupElysia(client: TelegramClient) {
     }
   }, {
     body: t.Object({
-      id: t.String({ description: "Chat or group ID", pattern: "^-?\\d+$" }),
+      id: t.String({ description: "Chat or group ID" }),
       message: t.String({ description: "Message content", maxLength: 4096 }),
     }),
   });
@@ -127,13 +128,38 @@ function setupElysia(client: TelegramClient) {
     }
   }, {
     body: t.Object({
-      id: t.String({ description: "Chat or group ID", pattern: "^-?\\d+$" }),
+      id: t.String({ description: "Chat or group ID" }),
       image: t.File({
         description: "Image file to upload",
         maxSize: 10 * 1024 * 1024,
         type: ["image/jpeg", "image/png", "image/gif"],
       }),
       caption: t.Optional(t.String({ description: "Caption for the image", maxLength: 1024 })),
+    }),
+  });
+
+  // Send File via POST
+  app.post("/send-file", async ({ body }): Promise<ApiResponse<string>> => {
+    if (!body.id || !body.file) {
+      return { success: false, error: "Invalid request: id and file are required" };
+    }
+    try {
+      const fileBuffer = Buffer.from(await body.file.arrayBuffer());
+      await sendFile(client, body.id, fileBuffer, body.caption);
+      return { success: true, data: "File sent successfully" };
+    } catch (error) {
+      console.error("Error sending file:", error);
+      return { success: false, error: `Failed to send file: ${(error as Error).message}` };
+    }
+  }, {
+    body: t.Object({
+      id: t.String({ description: "Chat or group ID" }),
+      file: t.File({
+        description: "File to upload",
+        maxSize: 10 * 1024 * 1024,
+        type: ["application/pdf", "text/csv", "text/plain", "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+      }),
+      caption: t.Optional(t.String({ description: "Caption for the file", maxLength: 1024 })),
     }),
   });
 
