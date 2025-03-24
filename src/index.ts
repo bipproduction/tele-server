@@ -32,8 +32,6 @@ type ApiResponse<T> =
 // Inisialisasi Elysia App
 function setupElysia(client: TelegramClient) {
   const api = new Elysia({ prefix: "/api" })
-    .use(swagger())
-    .use(cors({ origin: "*" }))
     .onBeforeHandle(({ request, response }) => {
       const apiKey = request.headers.get("x-api-key");
       const url = new URL(request.url).pathname;
@@ -224,13 +222,15 @@ function setupElysia(client: TelegramClient) {
   );
 
   const app = new Elysia();
+  app.use(swagger())
+  app.use(cors({ origin: "*" }))
+  app.use(api);
 
   app.get("/", () => "Welcome to Telegram Bot API");
   app.get("/version", async () => {
     const version = await getAppVersion();
     return { version };
   });
-  app.use(api);
 
   return app;
 }
